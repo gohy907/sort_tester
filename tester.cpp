@@ -88,9 +88,11 @@ int Tester::randFromRange(const int start, const int end) {
 void Tester::out_vector(std::ofstream &stream,
                         const std::vector<int> &numbers) {
     stream << "{";
-    for (size_t i = 0; i < numbers.size(); ++i) {
+    for (size_t i = 0; i < numbers.size() - 1; ++i) {
         stream << numbers[i] << ", ";
     }
+    stream << numbers[numbers.size() - 1];
+
     stream << "}" << std::endl;
 }
 
