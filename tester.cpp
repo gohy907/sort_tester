@@ -39,6 +39,8 @@ class Tester {
     public:
         void start();
         void benchmark(const Config &config);
+        void start_once(void (*const sort)(std::vector<int> &),
+                        std::vector<int> &numbers);
         Tester() {}
         Tester(const std::vector<Config> &test_configs)
             : test_configs(test_configs) {}
@@ -65,6 +67,15 @@ void Tester::benchmark(const Config &config) {
                       << std::endl;
         }
     }
+}
+
+void Tester::start_once(void (*const sort)(std::vector<int> &),
+                        std::vector<int> &numbers) {
+    std::vector<int> initial_numbers = numbers;
+    std::clock_t time = evaluate_time(sort, numbers);
+    validate(initial_numbers, numbers);
+
+    out << "A = (" << numbers.size() << ", " << time << ")" << std::endl;
 }
 
 int Tester::randFromRange(const int start, const int end) {

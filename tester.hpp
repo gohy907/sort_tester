@@ -32,6 +32,8 @@ class Tester {
     public:
         void start();
         void benchmark(const Config &config);
+        void start_once(void (*const sort)(std::vector<int> &),
+                        std::vector<int> &numbers);
         Tester() {}
         Tester(const std::vector<Config> &test_configs)
             : test_configs(test_configs) {}
