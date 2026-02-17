@@ -55,7 +55,8 @@ class Tester {
 void Tester::benchmark(const Config &config) {
     const size_t max_length = 100000000;
     for (size_t i = 2; i < max_length; ++i) {
-        Config new_config(config.sort, 1, i, config.min, config.max, false);
+        Config new_config(config.sort, 1, i, config.min, config.max,
+                          config.critical);
         test(new_config);
         if (i % 1000000 == 0) {
             std::cout << i << " ITERATIONS COMPLETE OUT OF " << max_length
