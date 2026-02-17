@@ -2,8 +2,10 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <random>
 #include <vector>
 
+std::mt19937 rnd(time(NULL));
 namespace tester {
 
 std::ofstream out("benchmark.txt");
@@ -67,9 +69,9 @@ void Tester::benchmark(const Config &config) {
 
 int Tester::randFromRange(const int start, const int end) {
     if (start == INT_MIN && end == INT_MAX) {
-        return rand();
+        return rnd();
     }
-    return rand() % (end - start + 1) + start;
+    return rnd() % (end - start + 1) + start;
 }
 
 void Tester::out_vector(std::ofstream &stream,
