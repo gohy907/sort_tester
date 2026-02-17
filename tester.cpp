@@ -36,19 +36,33 @@ struct Config {
 class Tester {
     public:
         void start();
+        void benchmark(const Config &config);
+        Tester() {}
         Tester(const std::vector<Config> &test_configs)
             : test_configs(test_configs) {}
 
     private:
         int randFromRange(const int start, const int end);
         void out_vector(std::ofstream &stream, const std::vector<int> &numbers);
-        std::clock_t benchmark(void (*const sort)(std::vector<int> &),
-                               std::vector<int> &numbers);
+        std::clock_t evaluate_time(void (*const sort)(std::vector<int> &),
+                                   std::vector<int> &numbers);
         void validate(const std::vector<int> &initial_numbers,
                       const std::vector<int> &numbers);
         void test(const Config &config);
         const std::vector<Config> test_configs;
 };
+
+void Tester::benchmark(const Config &config) {
+    const size_t max_length = 100000000;
+    for (size_t i = 2; i < max_length; ++i) {
+        Config new_config(config.sort, 1, i, config.min, config.max, false);
+        test(new_config);
+        if (i % 1000000 == 0) {
+            std::cout << i << " ITERATIONS COMPLETE OUT OF " << max_length
+                      << std::endl;
+        }
+    }
+}
 
 int Tester::randFromRange(const int start, const int end) {
     if (start == INT_MIN && end == INT_MAX) {
@@ -66,8 +80,8 @@ void Tester::out_vector(std::ofstream &stream,
     stream << "}" << std::endl;
 }
 
-std::clock_t Tester::benchmark(void (*const sort)(std::vector<int> &),
-                               std::vector<int> &numbers) {
+std::clock_t Tester::evaluate_time(void (*const sort)(std::vector<int> &),
+                                   std::vector<int> &numbers) {
 
     std::clock_t c_start = std::clock();
     sort(numbers);
@@ -104,10 +118,10 @@ void Tester::test(const Config &config) {
         }
 
         std::vector<int> initial_numbers = numbers;
-        std::clock_t time = benchmark(config.sort, numbers);
+        std::clock_t time = evaluate_time(config.sort, numbers);
         validate(initial_numbers, numbers);
 
-        out << "A = (" << i << ", " << time << ")" << std::endl;
+        out << "A = (" << numbers.size() << ", " << time << ")" << std::endl;
     }
 }
 
