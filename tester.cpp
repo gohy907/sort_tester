@@ -13,7 +13,7 @@ std::ofstream error("error.txt");
 
 struct Config {
         void (*const sort)(std::vector<int> &);
-        const int number_of_tests;
+        const size_t number_of_tests;
         const size_t length;
         const int min;
         const int max;
@@ -21,7 +21,7 @@ struct Config {
 
     public:
         Config(void (*const sort)(std::vector<int> &),
-               const int number_of_tests, const size_t length, const int min,
+               const size_t number_of_tests, const size_t length, const int min,
                const int max, const bool critical)
             : sort(sort),
               number_of_tests(number_of_tests),
@@ -30,7 +30,7 @@ struct Config {
               max(max),
               critical(critical) {}
         Config(void (*const sort)(std::vector<int> &),
-               const int number_of_tests, const size_t length, const int min,
+               const size_t number_of_tests, const size_t length, const int min,
                const int max)
             : Config(sort, number_of_tests, length, min, max, false) {}
 };
@@ -136,7 +136,7 @@ std::vector<int> Tester::construct_vector(const Config &config) {
 }
 
 void Tester::test(const Config &config) {
-    for (int i = 0; i < config.number_of_tests; ++i) {
+    for (size_t i = 0; i < config.number_of_tests; ++i) {
         std::vector<int> numbers = construct_vector(config);
         std::vector<int> initial_numbers = numbers;
         std::clock_t time = evaluate_time(config.sort, numbers);
