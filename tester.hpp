@@ -34,6 +34,7 @@ class Tester {
         void benchmark(const Config &config);
         void start_once(void (*const sort)(std::vector<int> &),
                         std::vector<int> &numbers);
+        std::vector<std::clock_t> average_times();
         Tester() {}
         Tester(const std::vector<Config> &test_configs)
             : test_configs(test_configs) {}
@@ -46,6 +47,8 @@ class Tester {
         void validate(const std::vector<int> &initial_numbers,
                       const std::vector<int> &numbers);
         void test(const Config &config);
+
+        std::clock_t average_time(const Config &config);
         std::vector<int> construct_vector(const Config &config);
         const std::vector<Config> test_configs;
 };

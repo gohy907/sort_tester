@@ -41,6 +41,7 @@ class Tester {
         void benchmark(const Config &config);
         void start_once(void (*const sort)(std::vector<int> &),
                         std::vector<int> &numbers);
+        std::vector<std::clock_t> average_times();
         Tester() {}
         Tester(const std::vector<Config> &test_configs)
             : test_configs(test_configs) {}
@@ -53,6 +54,8 @@ class Tester {
         void validate(const std::vector<int> &initial_numbers,
                       const std::vector<int> &numbers);
         void test(const Config &config);
+
+        std::clock_t average_time(const Config &config);
         std::vector<int> construct_vector(const Config &config);
         const std::vector<Config> test_configs;
 };
@@ -68,6 +71,26 @@ void Tester::benchmark(const Config &config) {
                       << std::endl;
         }
     }
+}
+
+std::vector<std::clock_t> Tester::average_times() {
+    std::vector<std::clock_t> times(test_configs.size(), 0);
+    for (size_t i = 0; i < test_configs.size(); ++i) {
+        times[i] = average_time(test_configs[i]);
+    }
+    return times;
+};
+
+std::clock_t Tester::average_time(const Config &config) {
+    std::clock_t total_time = 0;
+    for (size_t i = 0; i < config.number_of_tests; ++i) {
+        std::vector<int> numbers = construct_vector(config);
+        std::vector<int> initial_numbers = numbers;
+        std::clock_t time = evaluate_time(config.sort, numbers);
+        validate(initial_numbers, numbers);
+        total_time += static_cast<long double>(time) / config.number_of_tests;
+    }
+    return static_cast<std::clock_t>(total_time);
 }
 
 void Tester::start_once(void (*const sort)(std::vector<int> &),
