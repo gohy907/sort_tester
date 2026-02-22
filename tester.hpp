@@ -46,6 +46,7 @@ class Tester {
         void validate(const std::vector<int> &initial_numbers,
                       const std::vector<int> &numbers);
         void test(const Config &config);
+        std::vector<int> construct_vector(const Config &config);
         const std::vector<Config> test_configs;
 };
 } // namespace tester

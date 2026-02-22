@@ -53,6 +53,7 @@ class Tester {
         void validate(const std::vector<int> &initial_numbers,
                       const std::vector<int> &numbers);
         void test(const Config &config);
+        std::vector<int> construct_vector(const Config &config);
         const std::vector<Config> test_configs;
 };
 
@@ -122,17 +123,21 @@ void Tester::validate(const std::vector<int> &initial_numbers,
     }
 }
 
+std::vector<int> Tester::construct_vector(const Config &config) {
+    std::vector<int> numbers(config.length, 0);
+    for (size_t j = 0; j < config.length; ++j) {
+        numbers[j] = randFromRange(config.min, config.max);
+    }
+    if (config.critical) {
+        numbers.push_back(INT_MAX);
+        numbers.push_back(INT_MIN);
+    }
+    return numbers;
+}
+
 void Tester::test(const Config &config) {
     for (int i = 0; i < config.number_of_tests; ++i) {
-        std::vector<int> numbers(config.length, 0);
-        for (size_t j = 0; j < config.length; ++j) {
-            numbers[j] = randFromRange(config.min, config.max);
-        }
-        if (config.critical) {
-            numbers.push_back(INT_MAX);
-            numbers.push_back(INT_MIN);
-        }
-
+        std::vector<int> numbers = construct_vector(config);
         std::vector<int> initial_numbers = numbers;
         std::clock_t time = evaluate_time(config.sort, numbers);
         validate(initial_numbers, numbers);
