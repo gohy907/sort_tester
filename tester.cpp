@@ -63,7 +63,7 @@ struct BenchmarkConfig {
 class Tester {
     public:
         void start();
-        void benchmark(const BenchmarkConfig &config);
+        void benchmark(const std::vector<BenchmarkConfig> &benchmark_configs);
         void start_once(void (*const sort)(std::vector<int> &),
                         std::vector<int> &numbers);
         std::vector<std::clock_t> average_times();
@@ -85,14 +85,17 @@ class Tester {
         const std::vector<Config> test_configs;
 };
 
-void Tester::benchmark(const BenchmarkConfig &config) {
-    const size_t max_length = 100000000;
-    for (size_t i = config.start_size; i < max_length;
-         i += config.size_to_iterate) {
-        Config new_config(config.sort, 1, i, config.min, config.max,
-                          config.critical);
+void Tester::benchmark(const std::vector<BenchmarkConfig> &benchmark_configs) {
+    const size_t max_length = (static_cast<size_t>(1) << 63) - 1;
+    for (size_t i = 0; i < benchmark_configs.size(); ++i) {
+        const BenchmarkConfig &benchmark_config = benchmark_configs[i];
+        for (size_t i = benchmark_config.start_size; i < max_length;
+             i += benchmark_config.size_to_iterate) {
+            Config new_config(benchmark_config.sort, 1, i, benchmark_config.min,
+                              benchmark_config.max, benchmark_config.critical);
 
-        test(new_config);
+            test(new_config);
+        }
     }
 }
 

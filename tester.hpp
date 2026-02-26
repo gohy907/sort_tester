@@ -56,7 +56,7 @@ struct BenchmarkConfig {
 class Tester {
     public:
         void start();
-        void benchmark(const Config &config);
+        void benchmark(const std::vector<BenchmarkConfig> &config);
         void start_once(void (*const sort)(std::vector<int> &),
                         std::vector<int> &numbers);
         std::vector<std::clock_t> average_times();
