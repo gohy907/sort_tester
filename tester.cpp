@@ -62,14 +62,13 @@ struct BenchmarkConfig {
 
 class Tester {
     public:
-        void start();
+        void test(const std::vector<Config> &configs);
         void benchmark(const std::vector<BenchmarkConfig> &benchmark_configs);
         void start_once(void (*const sort)(std::vector<int> &),
                         std::vector<int> &numbers);
-        std::vector<std::clock_t> average_times();
+        std::vector<std::clock_t>
+        average_times(const std::vector<Config> &test_configs);
         Tester() {}
-        Tester(const std::vector<Config> &test_configs)
-            : test_configs(test_configs) {}
 
     private:
         int randFromRange(const int start, const int end);
@@ -78,11 +77,10 @@ class Tester {
                                    std::vector<int> &numbers);
         void validate(const std::vector<int> &initial_numbers,
                       const std::vector<int> &numbers);
-        void test(const Config &config);
+        void test_once(const Config &config);
 
         std::clock_t average_time(const Config &config);
         std::vector<int> construct_vector(const Config &config);
-        const std::vector<Config> test_configs;
 };
 
 void Tester::benchmark(const std::vector<BenchmarkConfig> &benchmark_configs) {
@@ -94,12 +92,13 @@ void Tester::benchmark(const std::vector<BenchmarkConfig> &benchmark_configs) {
             Config new_config(benchmark_config.sort, 1, i, benchmark_config.min,
                               benchmark_config.max, benchmark_config.critical);
 
-            test(new_config);
+            test_once(new_config);
         }
     }
 }
 
-std::vector<std::clock_t> Tester::average_times() {
+std::vector<std::clock_t>
+Tester::average_times(const std::vector<Config> &test_configs) {
     std::vector<std::clock_t> times(test_configs.size(), 0);
     for (size_t i = 0; i < test_configs.size(); ++i) {
         times[i] = average_time(test_configs[i]);
@@ -184,7 +183,7 @@ std::vector<int> Tester::construct_vector(const Config &config) {
     return numbers;
 }
 
-void Tester::test(const Config &config) {
+void Tester::test_once(const Config &config) {
     for (size_t i = 0; i < config.number_of_tests; ++i) {
         std::vector<int> numbers = construct_vector(config);
         std::vector<int> initial_numbers = numbers;
@@ -195,10 +194,10 @@ void Tester::test(const Config &config) {
     }
 }
 
-void Tester::start() {
+void Tester::test(const std::vector<Config> &test_configs) {
     for (size_t i = 0; i < test_configs.size(); ++i) {
         const Config &config = test_configs[i];
-        test(config);
+        test_once(config);
     }
 }
 } // namespace tester

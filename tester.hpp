@@ -55,14 +55,13 @@ struct BenchmarkConfig {
 
 class Tester {
     public:
-        void start();
-        void benchmark(const std::vector<BenchmarkConfig> &config);
+        void test(const std::vector<Config> &configs);
+        void benchmark(const std::vector<BenchmarkConfig> &benchmark_configs);
         void start_once(void (*const sort)(std::vector<int> &),
                         std::vector<int> &numbers);
-        std::vector<std::clock_t> average_times();
+        std::vector<std::clock_t>
+        average_times(const std::vector<Config> &test_configs);
         Tester() {}
-        Tester(const std::vector<Config> &test_configs)
-            : test_configs(test_configs) {}
 
     private:
         int randFromRange(const int start, const int end);
@@ -71,11 +70,10 @@ class Tester {
                                    std::vector<int> &numbers);
         void validate(const std::vector<int> &initial_numbers,
                       const std::vector<int> &numbers);
-        void test(const Config &config);
+        void test_once(const Config &config);
 
         std::clock_t average_time(const Config &config);
         std::vector<int> construct_vector(const Config &config);
-        const std::vector<Config> test_configs;
 };
 
 } // namespace tester
