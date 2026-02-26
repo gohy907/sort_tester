@@ -1,6 +1,34 @@
-# What is this? TL;DR
+# What is this?
 
 This library allows to easily create various tests and benchmarks for your sorting algorithms in C++.
+
+# Basic testing
+
+You can use `std::vector<Config>` to describe configs for testing your function in various scenarios.
+
+`Config` settings look like this:
+
+```cpp
+struct Config {
+        void (*const sort)(std::vector<int> &);
+        const unsigned long long number_of_tests;
+        const size_t length;
+        const int min;
+        const int max;
+        const bool critical;
+}
+```
+
+- `sort` is your function to test;
+- `number_of_tests` is, well, number of tests that will be executed with this config;
+- `length` is size of allocated `std::vector` to test;
+- `min` and `max` are constraints for numbers that will fill up `std::vector` to test.
+
+Basically, every iteration new `std::vector` will be allocated and filled up with random integers ranging from `min` to `max`. 
+
+- `critical` is flag which you want to set `true` to add `INT_MIN` and `INT_MAX` to the `std::vector` in test. Note that `size()` of created `std::vector` will exceed `length` by 2.
+
+And then you can start testing with `test()` with `std::vector<Config>`, which runs your function with randomly constructed `std::vector`, computes time in which your function have completed sorting such vector and checks it for correctness in various passed configurations. 
 
 For example:
 
@@ -29,33 +57,6 @@ int main() {
     t.test({tester::Config(insertion_sort, 10, 50, -1'000, 1'000)});
 }
 ```
-# Basic testing
-
-You can use `std::vector<Config>` to describe configs for testing your function in various scenarios.
-
-`Config` settings look like this:
-
-```cpp
-struct Config {
-        void (*const sort)(std::vector<int> &);
-        const unsigned long long number_of_tests;
-        const size_t length;
-        const int min;
-        const int max;
-        const bool critical;
-}
-```
-
-- `sort` is your function to test, 
-- `number_of_tests` is, well, number of tests that will be executed with this config
-- `length` is size of allocated `std::vector` to test
-- `min` and `max` are constraints for numbers that will fill up `std::vector` to test
-
-Basically, every iteration new `std::vector` will be allocated and filled up with random integers ranging from `min` to `max`. 
-
-- `critical` is flag which you want to set `true` to add `INT_MIN` and `INT_MAX` to the `std::vector` in test. Note that `size()` of created `std::vector` will exceed `length` by 2.
-
-And then you can start testing with `test()` with `std::vector<Config>`, which runs your function with randomly constructed `std::vector`, computes time in which your function have completed sorting such vector and checks it for correctness in various passed configurations. 
 
 If your function failes to sort vector properly, `abort()` will be executed and you will have input and output vector in "error.txt" next to your main `.cpp` file, so you can run your algorithm with this data and figure out what have gone wrong.
 
@@ -84,8 +85,8 @@ struct BenchmarkConfig {
 }
 ```
 
-- `start_size` is initial length of vector at the start of benchmarks
-- `size_to_iterate` is offset by which `start_size` is incremented every iteration of benchmark
+- `start_size` is initial length of vector at the start of benchmarks;
+- `size_to_iterate` is offset by which `start_size` is incremented every iteration of benchmark.
 
 Other fields are same as in `Config`.
 
@@ -118,5 +119,6 @@ for (size_t i = 0; i < times.size(); ++i) {
 
 # Notes
 
-Data output to "benchmark.txt" is Desmos-compatible, you can copy strings of file and paste them into Desmos to visualize and estimate time complexity of your algorithm.
+- Data output to "benchmark.txt" is Desmos-compatible, you can copy strings of file and paste them into Desmos to visualize and estimate time complexity of your algorithm.
+- In current realization validation of algorithm is being done in `benchmark()` and `average_times()`  although these methods do not have to do that directly. It have benefits such as notification of developer if something goes wrong in theirs algorithm by `abort()` but necessity of this functionality is still up to debate. 
 
