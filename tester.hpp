@@ -6,7 +6,7 @@ namespace tester {
 
 struct Config {
         void (*const sort)(std::vector<int> &);
-        const size_t number_of_tests;
+        const unsigned long long number_of_tests;
         const size_t length;
         const int min;
         const int max;
@@ -14,8 +14,8 @@ struct Config {
 
     public:
         Config(void (*const sort)(std::vector<int> &),
-               const size_t number_of_tests, const size_t length, const int min,
-               const int max, const bool critical)
+               const unsigned long long number_of_tests, const size_t length,
+               const int min, const int max, const bool critical)
             : sort(sort),
               number_of_tests(number_of_tests),
               length(length),
@@ -23,8 +23,8 @@ struct Config {
               max(max),
               critical(critical) {}
         Config(void (*const sort)(std::vector<int> &),
-               const size_t number_of_tests, const size_t length, const int min,
-               const int max)
+               const unsigned long long number_of_tests, const size_t length,
+               const int min, const int max)
             : Config(sort, number_of_tests, length, min, max, false) {}
 };
 
