@@ -35,10 +35,35 @@ struct Config {
             : Config(sort, number_of_tests, length, min, max, false) {}
 };
 
+struct BenchmarkConfig {
+        void (*const sort)(std::vector<int> &);
+        const size_t start_size;
+        const size_t size_to_iterate;
+        const int min;
+        const int max;
+        const bool critical;
+
+    public:
+        BenchmarkConfig(void (*const sort)(std::vector<int> &),
+                        const size_t start_size, const size_t size_to_iterate,
+                        const int min, const int max, const bool critical)
+            : sort(sort),
+              start_size(start_size),
+              size_to_iterate(size_to_iterate),
+              min(min),
+              max(max),
+              critical(critical) {}
+        BenchmarkConfig(void (*const sort)(std::vector<int> &),
+                        const size_t start_size, const size_t size_to_iterate,
+                        const int min, const int max)
+            : BenchmarkConfig(sort, start_size, size_to_iterate, min, max,
+                              false) {}
+};
+
 class Tester {
     public:
         void start();
-        void benchmark(const Config &config);
+        void benchmark(const BenchmarkConfig &config);
         void start_once(void (*const sort)(std::vector<int> &),
                         std::vector<int> &numbers);
         std::vector<std::clock_t> average_times();
@@ -60,16 +85,14 @@ class Tester {
         const std::vector<Config> test_configs;
 };
 
-void Tester::benchmark(const Config &config) {
+void Tester::benchmark(const BenchmarkConfig &config) {
     const size_t max_length = 100000000;
-    for (size_t i = 2; i < max_length; ++i) {
+    for (size_t i = config.start_size; i < max_length;
+         i += config.size_to_iterate) {
         Config new_config(config.sort, 1, i, config.min, config.max,
                           config.critical);
+
         test(new_config);
-        if (i % 1000000 == 0) {
-            std::cout << i << " ITERATIONS COMPLETE OUT OF " << max_length
-                      << std::endl;
-        }
     }
 }
 

@@ -28,6 +28,31 @@ struct Config {
             : Config(sort, number_of_tests, length, min, max, false) {}
 };
 
+struct BenchmarkConfig {
+        void (*const sort)(std::vector<int> &);
+        const size_t start_size;
+        const size_t size_to_iterate;
+        const int min;
+        const int max;
+        const bool critical;
+
+    public:
+        BenchmarkConfig(void (*const sort)(std::vector<int> &),
+                        const size_t start_size, const size_t size_to_iterate,
+                        const int min, const int max, const bool critical)
+            : sort(sort),
+              start_size(start_size),
+              size_to_iterate(size_to_iterate),
+              min(min),
+              max(max),
+              critical(critical) {}
+        BenchmarkConfig(void (*const sort)(std::vector<int> &),
+                        const size_t start_size, const size_t size_to_iterate,
+                        const int min, const int max)
+            : BenchmarkConfig(sort, start_size, size_to_iterate, min, max,
+                              false) {}
+};
+
 class Tester {
     public:
         void start();
@@ -52,4 +77,5 @@ class Tester {
         std::vector<int> construct_vector(const Config &config);
         const std::vector<Config> test_configs;
 };
+
 } // namespace tester
