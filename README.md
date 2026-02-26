@@ -103,13 +103,17 @@ Results of benchmark will iteratively write to "benchmark.txt", same as in `test
 You can also measure average time it took your function to sort data in specific configuration.
 
 It can be computed in `average_times()` method with `std::vector<Config>` to pass. 
-This method will compute durations of time in which your function managed to sort data, average it by `number_of_tests` and output `std::vector<std::clock_t>` where every `std::clock_t` corresponds to each `Config` respectively be indices.
+This method will compute durations of time in which your function managed to sort data, average it by `number_of_tests` and output `std::vector<std::clock_t>` where every `std::clock_t` corresponds to each `Config` respectively by indices.
 
 Example of using `average_times()`:
 
 ```cpp
 tester::Tester t;
-t.average_times({tester::Config(insertion_sort, 10, 50, -1'000, 1'000)});
+std::vector<std::clock_t> times = t.average_times(
+    {tester::Config(insertion_sort, 10, 5000, -1'000, 1'000)});
+for (size_t i = 0; i < times.size(); ++i) {
+    std::cout << times[i] << " ";
+}
 ```
 
 # Notes
